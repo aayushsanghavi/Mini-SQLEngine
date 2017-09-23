@@ -95,7 +95,7 @@ class SQLEngine(object) :
 	def evaluateWhere(self, database) :
 		results = []
 		if len(self.fromArgs) == 1 :
-			if not ("and" in self.whereArgs or "or" in self.whereArgs) :
+			if not "and" in self.whereArgs and not "or" in self.whereArgs :
 				column, condition, value = self.whereArgs.split()
 				for row in database.tables[self.fromArgs[0]]["data"] :
 					if self.checkCondition(row[database.tables[self.fromArgs[0]]["columns"][column]], condition, value) :
@@ -209,11 +209,12 @@ def main() :
 					crudeResults = sqlEngine.joinedTables
 					columns = sqlEngine.joinedColumns
 				else :
-					crudeResults = database.tables[sqlEngine.fromArgs[0]]["data"]
+					crudeResults = sqlEngine.evaluateWhere(database)
 					columns = database.tables[sqlEngine.fromArgs[0]]["columns"]
 
 			refined = sqlEngine.selectQuery(crudeResults, columns)
 			print refined
+			print len(refined)
 
 if __name__ == "__main__" :
 	main()
